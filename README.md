@@ -1,12 +1,13 @@
 # Four One Five Visuals Quote Builder
 
-Static GitHub Pages package.
+Static GitHub Pages quote calculator.
 
-## Upload to GitHub
-1. Create a new GitHub repo.
-2. Upload all files in this folder.
-3. Go to Settings > Pages.
-4. Set Source to `Deploy from a branch`.
-5. Select `main` and `/root`, then Save.
+## Files included
+- `index.html`
+- `styles.css`
+- `script.js`
+- `manifest.json`
+- PWA icons: `assets/icon-192.png`, `assets/icon-512.png`, `assets/apple-touch-icon.png`, `assets/favicon.ico`
 
-The app will publish as a GitHub Pages site.
+## Deploy
+Upload the folder contents to a GitHub repo and enable GitHub Pages from the main branch.
