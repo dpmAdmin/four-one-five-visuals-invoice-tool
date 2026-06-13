@@ -76,14 +76,54 @@ function money(n){return '$'+Math.round(n).toLocaleString()}
 function renderSections(){Object.entries(sections).forEach(([id,items])=>{document.getElementById(id).innerHTML=items.map((it,i)=>{const key=id+'_'+i;const extra=it[2]==='qty'?`<input class="qty" type="number" min="0" step="1" id="${key}_qty" value="1" data-key="${key}">`:'';return `<div class="row"><label><input type="checkbox" id="${key}" data-key="${key}"><span><b>${it[0]}</b>${it[3]?`<div class="note">${it[3]}</div>`:''}</span></label><div><div class="price">${money(it[1])}</div>${extra}</div></div>`}).join('')})}
 function addCustomLine(desc='',amount=''){const idx=document.querySelectorAll('.custom-grid').length; const wrap=document.createElement('div'); wrap.className='custom-grid'; wrap.innerHTML=`<input class="customDesc" type="text" placeholder="Description" value="${desc}"><input class="customAmount" type="number" min="0" step="1" placeholder="$" value="${amount}">`; document.getElementById('customLines').appendChild(wrap);}
 function selectedLines(){let subtotal=0,lines=[];Object.entries(sections).forEach(([id,items])=>items.forEach((it,i)=>{const key=id+'_'+i, cb=document.getElementById(key); if(!cb?.checked)return; let qty=1, label=it[0]; if(it[2]==='qty'){qty=Number(document.getElementById(key+'_qty').value||0); label += ` x ${qty}`;} const line=qty*it[1]; subtotal+=line; lines.push([label,line]);}));
+ document.querySelectorAll('input[data-price]').forEach(input=>{const qty=Number(input.value||0); const price=Number(input.dataset.price||0); const label=input.dataset.label||'Line Item'; if(qty>0 && price>0){const line=qty*price; subtotal+=line; lines.push([`${label} x ${qty}`,line]);}});
  document.querySelectorAll('.custom-grid').forEach(row=>{const desc=row.querySelector('.customDesc').value.trim(); const amount=Number(row.querySelector('.customAmount').value||0); if(desc && amount>0){subtotal+=amount; lines.push([desc,amount]);}});
  const override=document.getElementById('travelOverride').value; const travelAmt=override!==''?Number(override||0):Number(document.getElementById('travel').value||0); if(travelAmt>0){subtotal+=travelAmt; lines.push(['Travel Fee',travelAmt]);}
  return {subtotal,lines};}
 function calc(){const {subtotal,lines}=selectedLines(); const pct=Math.max(0,Number(document.getElementById('discountPercent').value||0)); const dollars=Math.max(0,Number(document.getElementById('discountValue').value||0)); const pctDiscount=subtotal*(pct/100); const totalDiscount=Math.min(subtotal,pctDiscount+dollars); const total=Math.max(0,subtotal-totalDiscount); const client=document.getElementById('client').value||'Client'; const prop=document.getElementById('property').value||'Property'; document.getElementById('total').textContent=money(total); const lineText=lines.map(([label,amount])=>`${label} - ${money(amount)}`).join('\n')||'No services selected'; const discountLines=totalDiscount>0?`\nSubtotal: ${money(subtotal)}\nDiscount${pct?` (${pct}%)`:''}${dollars?` + ${money(dollars)}`:''}: -${money(totalDiscount)}\n`:'\n'; const text=`Four One Five Visuals Quote\nClient: ${client}\nProperty: ${prop}\n\n${lineText}\n${discountLines}\nTOTAL: ${money(total)}`; document.getElementById('summary').value=text; document.getElementById('printSummary').textContent=text; save();}
-function save(){localStorage.setItem('fof_quote_v18',JSON.stringify({client:client.value,property:property.value,discountPercent:discountPercent.value,discountValue:discountValue.value,travel:travel.value,travelOverride:travelOverride.value,checked:[...document.querySelectorAll('input[type=checkbox]')].map(x=>[x.id,x.checked]),qty:[...document.querySelectorAll('.qty')].map(x=>[x.id,x.value]),custom:[...document.querySelectorAll('.custom-grid')].map(row=>[row.querySelector('.customDesc').value,row.querySelector('.customAmount').value])}));}
-function load(){const saved=JSON.parse(localStorage.getItem('fof_quote_v18')||'{}'); if(saved.client)client.value=saved.client;if(saved.property)property.value=saved.property;if(saved.discountPercent)discountPercent.value=saved.discountPercent;if(saved.discountValue)discountValue.value=saved.discountValue;if(saved.travel)travel.value=saved.travel;if(saved.travelOverride)travelOverride.value=saved.travelOverride;(saved.checked||[]).forEach(([id,v])=>{let e=document.getElementById(id);if(e)e.checked=v});(saved.qty||[]).forEach(([id,v])=>{let e=document.getElementById(id);if(e)e.value=v}); const custom=saved.custom&&saved.custom.length?saved.custom:[['','']]; custom.forEach(([d,a])=>addCustomLine(d,a));}
+function save(){localStorage.setItem('fof_quote_v18',JSON.stringify({client:client.value,property:property.value,discountPercent:discountPercent.value,discountValue:discountValue.value,travel:travel.value,travelOverride:travelOverride.value,checked:[...document.querySelectorAll('input[type=checkbox]')].map(x=>[x.id,x.checked]),qty:[...document.querySelectorAll('.qty')].map(x=>[x.id,x.value]),extras:[...document.querySelectorAll('input[data-price]')].map(x=>[x.id,x.value]),custom:[...document.querySelectorAll('.custom-grid')].map(row=>[row.querySelector('.customDesc').value,row.querySelector('.customAmount').value])}));}
+function load(){const saved=JSON.parse(localStorage.getItem('fof_quote_v18')||'{}'); if(saved.client)client.value=saved.client;if(saved.property)property.value=saved.property;if(saved.discountPercent)discountPercent.value=saved.discountPercent;if(saved.discountValue)discountValue.value=saved.discountValue;if(saved.travel)travel.value=saved.travel;if(saved.travelOverride)travelOverride.value=saved.travelOverride;(saved.checked||[]).forEach(([id,v])=>{let e=document.getElementById(id);if(e)e.checked=v});(saved.qty||[]).forEach(([id,v])=>{let e=document.getElementById(id);if(e)e.value=v});(saved.extras||[]).forEach(([id,v])=>{let e=document.getElementById(id);if(e)e.value=v}); const custom=saved.custom&&saved.custom.length?saved.custom:[['','']]; custom.forEach(([d,a])=>addCustomLine(d,a));}
 renderSections(); load();
-document.addEventListener('input',calc);document.addEventListener('change',calc);document.getElementById('addCustom').onclick=()=>{addCustomLine();calc()};document.getElementById('copy').onclick=()=>navigator.clipboard.writeText(document.getElementById('summary').value);document.getElementById('print').onclick=()=>{calc(); setTimeout(()=>window.print(),50)};document.getElementById('clear').onclick=()=>{localStorage.removeItem('fof_quote_v18');location.reload()};calc();
+document.addEventListener('input',calc);document.addEventListener('change',calc);document.getElementById('addCustom').onclick=()=>{addCustomLine();calc()};document.getElementById('copy').onclick=()=>navigator.clipboard.writeText(document.getElementById('summary').value);document.getElementById('print').onclick=()=>{
+  calc();
+  const text=document.getElementById('summary').value;
+  const escaped=text.replace(/[&<>"']/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const printHtml=`<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Four One Five Quote</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin:0;padding:24px;background:#fff;color:#111;}
+    .brand{letter-spacing:.12em;text-transform:uppercase;font-size:11px;color:#555;margin-bottom:18px;}
+    h1{font-size:24px;margin:0 0 16px;}
+    pre{white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.5;border-top:1px solid #ddd;padding-top:16px;}
+    .actions{display:flex;gap:10px;margin:0 0 18px;}
+    button{border:0;border-radius:12px;padding:12px 14px;font-weight:800;background:#9fd8cb;color:#07100e;font-size:15px;}
+    @media print{.actions{display:none}body{padding:32px}}
+  </style>
+</head>
+<body>
+  <div class="brand">Four One Five Visuals</div>
+  <h1>Quote Summary</h1>
+  <div class="actions">
+    <button onclick="window.print()">Print</button>
+    <button onclick="navigator.clipboard.writeText(document.querySelector('pre').innerText)">Copy</button>
+  </div>
+  <pre>${escaped}</pre>
+</body>
+</html>`;
+  const win=window.open('', '_blank');
+  if(win){
+    win.document.open();
+    win.document.write(printHtml);
+    win.document.close();
+  }else{
+    const blob=new Blob([printHtml],{type:'text/html'});
+    const url=URL.createObjectURL(blob);
+    location.href=url;
+  }
+};document.getElementById('clear').onclick=()=>{localStorage.removeItem('fof_quote_v18');location.reload()};calc();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 
 function calculateDataPriceExtras(){
