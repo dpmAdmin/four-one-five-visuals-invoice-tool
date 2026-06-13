@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f1115" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>Four One Five Quote Builder</title>
+  <style>
+    :root{--bg:#0f1115;--card:#181b22;--muted:#8c94a3;--text:#f4f6fa;--line:#2a2f3a;--accent:#9fd8cb;--accent2:#c9fff2;--danger:#ffb4a8;}
+    *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#0f1115,#141821);color:var(--text);padding:18px;}
+    .wrap{max-width:860px;margin:0 auto 100px}.hero{padding:24px 4px 14px}.brand{letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;font-size:12px}.hero h1{margin:8px 0 6px;font-size:34px;line-height:1}.sub{color:var(--muted);font-size:15px;line-height:1.4}.card{background:rgba(24,27,34,.95);border:1px solid var(--line);border-radius:22px;padding:18px;margin:14px 0;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+    h2{font-size:18px;margin:0 0 12px}.row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border-top:1px solid var(--line);padding:13px 0}.row:first-of-type{border-top:0}.row label{display:flex;gap:10px;align-items:flex-start;font-size:15px}.price{color:var(--accent2);font-weight:700;white-space:nowrap}.note{color:var(--muted);font-size:12px;margin-top:4px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}input[type="text"],input[type="number"],select,textarea{width:100%;background:#0f1218;color:var(--text);border:1px solid var(--line);border-radius:14px;padding:12px;font-size:16px}input[type="checkbox"]{width:20px;height:20px;accent-color:var(--accent)}.qty{width:78px!important;text-align:center;padding:9px!important}.sticky{position:fixed;left:0;right:0;bottom:0;background:rgba(15,17,21,.92);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:12px 18px calc(12px + env(safe-area-inset-bottom));}.bar{max-width:860px;margin:0 auto;display:flex;gap:10px;align-items:center}.total{font-size:26px;font-weight:800;flex:1}.btn{border:0;border-radius:14px;padding:13px 15px;font-weight:800;background:var(--accent);color:#07100e;font-size:15px}.btn.secondary{background:#252b35;color:var(--text)}textarea{min-height:190px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}.small{font-size:12px;color:var(--muted);line-height:1.35}@media(max-width:640px){body{padding:14px}.controls{grid-template-columns:1fr}.hero h1{font-size:30px}.bar{flex-wrap:wrap}.total{width:100%;flex:auto}.btn{flex:1}.row{grid-template-columns:1fr}.price{padding-left:30px}.qty{margin-left:30px}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero"><div class="brand">Four One Five Visuals</div><h1>Quote Builder</h1><div class="sub">Build a clean estimate in the field, then copy the invoice text into Xero.</div></section>
+
+  <section class="card"><h2>Job Info</h2><div class="controls"><div class="field"><label>Client</label><input id="client" type="text" placeholder="Agent / client name"></div><div class="field"><label>Property</label><input id="property" type="text" placeholder="Address or listing name"></div></div></section>
+
+  <section class="card"><h2>Photography</h2><div id="photo"></div></section>
+  <section class="card"><h2>Luxury Video</h2><div id="video"></div></section>
+  <section class="card"><h2>Drone / Aerial</h2><div id="drone"></div></section>
+  <section class="card"><h2>Floor Plans</h2><div id="floor"></div></section>
+  <section class="card"><h2>Site Plans</h2><div id="site"></div></section>
+  <section class="card"><h2>Virtual Services</h2><div id="virtual"></div></section>
+
+  <section class="card"><h2>Invoice Summary</h2><textarea id="summary" readonly></textarea><p class="small">Tip: use Safari → Share → Add to Home Screen after hosting on GitHub Pages.</p></section>
+</div>
+<div class="sticky"><div class="bar"><div class="total" id="total">$0</div><button class="btn secondary" id="clear">Clear</button><button class="btn" id="copy">Copy</button></div></div>
+<script>
+const sections={
+ photo:[['Photography 0-999 sqft',360],['Photography 1,000-1,999 sqft',420],['Photography 2,000-2,999 sqft',480],['Photography 3,000-3,999 sqft',540],['Photography 4,000-4,999 sqft',600],['Additional 1,000 sqft',60],['Twilight Shoot - 20 photos',420],['Extended Twilight - 30 photos',540],['Pre-Marketing Mini Shoot',240],['Additional Photo Pack - 5 photos',60],['Standard Edits',30,'qty','per image'],['Advanced Editing',90,'qty','per hour'],['Photo Slideshow',120]],
+ video:[['Luxury Listing Film 0-999 sqft',600],['Luxury Listing Film 1,000-1,999 sqft',720],['Luxury Listing Film 2,000-2,999 sqft',840],['Luxury Listing Film 3,000-3,999 sqft',960],['Luxury Listing Film 4,000-4,999 sqft',1080],['Additional 1,000 sqft',120],['Agent Introduction Add-On',240],['Lifestyle Segment Add-On',360,'qty','per hour'],['Premium Platinum / Estate Film Package',4200]],
+ drone:[['Aerial Photos',360],['Aerial Photos Add-On',240],['Aerial Video',540],['Aerial Video Add-On',300],['Aerial Twilight Photography',480]],
+ floor:[['Floor Plan 0-999 sqft',300],['Floor Plan 1,000-1,999 sqft',360],['Floor Plan 2,000-2,999 sqft',420],['Floor Plan 3,000-3,999 sqft',540],['Floor Plan 4,000-4,999 sqft',660],['Floor Plan 5,000+ sqft',0,'sqft','at $0.144/sqft'],['Commercial Floor Plan',300,'qty','per hour'],['Redraw Existing Plan',120],['Color Floor Plan',60],['3D Color Floor Plan',120],['Interactive Floor Plan',120]],
+ site:[['Site Plan 0-9,999 lot sqft',120],['Site Plan 10,000-24,999 lot sqft',180],['Site Plan 25,000+ lot sqft',300,'qty','per hour']],
+ virtual:[['Virtual Twilight',120,'qty','per image'],['3 Virtual Twilights',240],['6 Virtual Twilights',360],['Virtual Staging',120,'qty','per image'],['Virtual Decluttering',180,'qty','per image'],['Virtual Renovation',360,'qty','per image']]
+};
+function money(n){return '$'+Math.round(n).toLocaleString()}
+function render(){Object.entries(sections).forEach(([id,items])=>{document.getElementById(id).innerHTML=items.map((it,i)=>{const key=id+'_'+i;const extra=it[2]?`<input class="qty" type="number" min="0" step="1" id="${key}_qty" value="${it[2]==='sqft'?5000:1}" data-key="${key}">`:'';return `<div class="row"><label><input type="checkbox" id="${key}" data-key="${key}"><span><b>${it[0]}</b>${it[3]?`<div class="note">${it[3]}</div>`:''}</span></label><div><div class="price">${it[2]==='sqft'?'$0.144/sqft':money(it[1])}</div>${extra}</div></div>`}).join('')})}
+function calc(){let total=0,lines=[];Object.entries(sections).forEach(([id,items])=>items.forEach((it,i)=>{const key=id+'_'+i, cb=document.getElementById(key); if(!cb?.checked)return; let qty=1, price=it[1], label=it[0]; if(it[2]){qty=Number(document.getElementById(key+'_qty').value||0); price=it[2]==='sqft'?0.144:it[1]; label += ` x ${qty}${it[2]==='sqft'?' sqft':''}`;} const line=qty*price; total+=line; lines.push(`${label} - ${money(line)}`)}));
+ const client=document.getElementById('client').value||'Client'; const prop=document.getElementById('property').value||'Property';
+ document.getElementById('total').textContent=money(total);
+ document.getElementById('summary').value=`Four One Five Visuals Quote\nClient: ${client}\nProperty: ${prop}\n\n${lines.join('\n')||'No services selected'}\n\nTOTAL: ${money(total)}`;
+ localStorage.setItem('fof_quote',JSON.stringify({client:document.getElementById('client').value,property:document.getElementById('property').value,checked:[...document.querySelectorAll('input[type=checkbox]')].map(x=>[x.id,x.checked]),qty:[...document.querySelectorAll('.qty')].map(x=>[x.id,x.value])}));}
+render();
+const saved=JSON.parse(localStorage.getItem('fof_quote')||'{}'); if(saved.client)client.value=saved.client;if(saved.property)property.value=saved.property;(saved.checked||[]).forEach(([id,v])=>{let e=document.getElementById(id);if(e)e.checked=v});(saved.qty||[]).forEach(([id,v])=>{let e=document.getElementById(id);if(e)e.value=v});
+document.addEventListener('input',calc);document.addEventListener('change',calc);document.getElementById('copy').onclick=()=>navigator.clipboard.writeText(document.getElementById('summary').value);document.getElementById('clear').onclick=()=>{localStorage.removeItem('fof_quote');location.reload()};calc();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+</script>
+</body></html>
