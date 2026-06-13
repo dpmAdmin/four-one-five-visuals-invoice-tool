@@ -4,95 +4,138 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Four One Five Visuals Quote Builder</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="assets/favicon.ico" sizes="any" />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="theme-color" content="#11100d" />
+  <link rel="manifest" href="manifest.json?v=2" />
+  <link rel="icon" href="assets/favicon.ico?v=2" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=2" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png?v=2" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=2" />
+  <link rel="stylesheet" href="styles.css?v=2" />
 </head>
 <body>
-  <main class="app">
-    <header class="hero">
-      <img src="assets/fv-icon.png" alt="Four One Five Visuals icon" class="logo" />
-      <div>
-        <p class="eyebrow">Four One Five Visuals</p>
-        <h1>Quote Builder</h1>
-        <p class="sub">Internal pricing tool for quick real estate media estimates.</p>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <img src="assets/fv-icon.png?v=2" alt="Four One Five Visuals" class="app-icon" />
+        <div>
+          <p class="eyebrow">Four One Five Visuals</p>
+          <h1>Quote Builder</h1>
+        </div>
       </div>
+      <button id="resetBtn" class="ghost">Reset</button>
     </header>
 
-    <section class="grid">
-      <div class="panel">
-        <h2>Photography</h2>
-        <label class="field">
-          <span>Property Photos</span>
-          <select id="photoPackage">
-            <option value="0">None</option>
-            <option value="250">0-999 sqft — $250</option>
-            <option value="350">1,000-1,999 sqft — $350</option>
-            <option value="450">2,000-2,999 sqft — $450</option>
-            <option value="550">3,000-3,999 sqft — $550</option>
-            <option value="650">4,000-4,999 sqft — $650</option>
-            <option value="750">5,000-5,999 sqft — $750</option>
-            <option value="2000">6,000+ sqft Drone Photos — $2,000</option>
-          </select>
-        </label>
-        <div class="note">Drone section matches Open Homes pricing, plus $50.</div>
+    <section class="layout">
+      <div class="builder">
+        <section class="card">
+          <div class="card-heading">
+            <h2>Photos</h2>
+            <p>Select one photo package.</p>
+          </div>
+          <label class="field">
+            <span>Property Photos</span>
+            <select id="photoPackage">
+              <option value="0">None</option>
+              <option value="250">0-999 sqft - $250</option>
+              <option value="350">1,000-1,999 sqft - $350</option>
+              <option value="450">2,000-2,999 sqft - $450</option>
+              <option value="550">3,000-3,999 sqft - $550</option>
+              <option value="650">4,000-4,999 sqft - $650</option>
+              <option value="750">5,000-5,999 sqft - $750</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="card">
+          <div class="card-heading">
+            <h2>Drone Photos</h2>
+            <p>Same style as Open Homes, plus $50.</p>
+          </div>
+          <label class="field">
+            <span>Drone Photo Package</span>
+            <select id="dronePhotoPackage">
+              <option value="0">None</option>
+              <option value="250">0-999 sqft - $250</option>
+              <option value="350">1,000-1,999 sqft - $350</option>
+              <option value="450">2,000-2,999 sqft - $450</option>
+              <option value="550">3,000-3,999 sqft - $550</option>
+              <option value="650">4,000-4,999 sqft - $650</option>
+              <option value="750">5,000-5,999 sqft - $750</option>
+              <option value="2000">6,000+ sqft - $2,000</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="card">
+          <div class="card-heading">
+            <h2>Video</h2>
+            <p>Select one video package. Social Media Package lives here.</p>
+          </div>
+          <label class="field">
+            <span>Property Video</span>
+            <select id="videoPackage">
+              <option value="0">None</option>
+              <option value="2250">0-3,999 sqft - $2,250</option>
+              <option value="3000">4,000-4,999 sqft - $3,000</option>
+              <option value="0">5,000+ sqft - Custom Quote</option>
+            </select>
+          </label>
+          <div class="qty-line">
+            <div>
+              <strong>Social Media Package</strong>
+              <span>$250 each</span>
+            </div>
+            <input id="socialQty" type="number" min="0" step="1" value="0" inputmode="numeric" />
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-heading">
+            <h2>Virtual Services</h2>
+            <p>Quantity fields for each service.</p>
+          </div>
+          <div class="qty-line"><div><strong>Virtual Staging</strong><span>$150 each</span></div><input id="stagingQty" type="number" min="0" step="1" value="0" inputmode="numeric" /></div>
+          <div class="qty-line"><div><strong>Virtual Decluttering</strong><span>$200 each</span></div><input id="declutterQty" type="number" min="0" step="1" value="0" inputmode="numeric" /></div>
+          <div class="qty-line"><div><strong>Virtual Renovation</strong><span>$350 each</span></div><input id="renoQty" type="number" min="0" step="1" value="0" inputmode="numeric" /></div>
+        </section>
+
+        <section class="card">
+          <div class="card-heading">
+            <h2>Rush</h2>
+            <p>Optional rush charges.</p>
+          </div>
+          <label class="toggle-row"><span>Rush Photos</span><strong>$250</strong><input id="rushPhotos" type="checkbox" /></label>
+          <label class="toggle-row"><span>Rush Video</span><strong>$500</strong><input id="rushVideo" type="checkbox" /></label>
+        </section>
+
+        <section class="card">
+          <div class="card-heading">
+            <h2>Custom</h2>
+            <p>Discounts, travel over 10 miles, and custom line items.</p>
+          </div>
+          <div class="two-col">
+            <label class="field"><span>Discount $</span><input id="discountDollars" type="number" min="0" step="1" value="0" /></label>
+            <label class="field"><span>Discount %</span><input id="discountPercent" type="number" min="0" max="100" step="1" value="0" /></label>
+          </div>
+          <label class="field"><span>Travel Fee - only if driving more than 10 miles</span><input id="travelFee" type="number" min="0" step="1" value="0" /></label>
+          <div class="two-col">
+            <label class="field"><span>Custom Line Item</span><input id="customName" type="text" placeholder="Example: Extra edit" /></label>
+            <label class="field"><span>Amount</span><input id="customAmount" type="number" step="1" value="0" /></label>
+          </div>
+        </section>
       </div>
 
-      <div class="panel">
-        <h2>Video</h2>
-        <label class="field">
-          <span>Property Video</span>
-          <select id="videoPackage">
-            <option value="0">None</option>
-            <option value="2250">0-3,999 sqft — $2,250</option>
-            <option value="3000">4,000-4,999 sqft — $3,000</option>
-            <option value="0">5,000+ sqft — Custom Quote</option>
-          </select>
-        </label>
-        <div class="qty-row">
-          <label for="socialQty">Social Media Package</label>
-          <div class="qty-wrap"><input id="socialQty" type="number" min="0" step="1" value="0" /><span>× $250</span></div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h2>Virtual Services</h2>
-        <div class="qty-row"><label for="stagingQty">Virtual Staging</label><div class="qty-wrap"><input id="stagingQty" type="number" min="0" step="1" value="0" /><span>× $150</span></div></div>
-        <div class="qty-row"><label for="declutterQty">Virtual Decluttering</label><div class="qty-wrap"><input id="declutterQty" type="number" min="0" step="1" value="0" /><span>× $200</span></div></div>
-        <div class="qty-row"><label for="renoQty">Virtual Renovation</label><div class="qty-wrap"><input id="renoQty" type="number" min="0" step="1" value="0" /><span>× $350</span></div></div>
-      </div>
-
-      <div class="panel">
-        <h2>Rush Services</h2>
-        <label class="check"><input id="rushPhotos" type="checkbox" /> Rush Photos — $250</label>
-        <label class="check"><input id="rushVideo" type="checkbox" /> Rush Video — $500</label>
-      </div>
-
-      <div class="panel">
-        <h2>Adjustments</h2>
-        <label class="field"><span>Discount $</span><input id="discountDollars" type="number" min="0" step="1" value="0" /></label>
-        <label class="field"><span>Discount %</span><input id="discountPercent" type="number" min="0" max="100" step="1" value="0" /></label>
-        <label class="field"><span>Travel Fee - over 10 miles</span><input id="travelFee" type="number" min="0" step="1" value="0" /></label>
-        <label class="field"><span>Custom Line Item Name</span><input id="customName" type="text" placeholder="Optional" /></label>
-        <label class="field"><span>Custom Line Item Amount</span><input id="customAmount" type="number" step="1" value="0" /></label>
-      </div>
-
-      <aside class="summary panel">
-        <h2>Quote Total</h2>
+      <aside class="quote-card">
+        <h2>Quote</h2>
         <div id="lineItems" class="line-items"></div>
-        <div class="total"><span>Total</span><strong id="total">$0</strong></div>
-        <label class="field"><span>Client / Property Notes</span><textarea id="notes" rows="5" placeholder="Address, agent, package notes, timing..."></textarea></label>
-        <div class="actions">
-          <button id="copyBtn">Copy Quote</button>
-          <button id="printBtn">Print / Save PDF</button>
-          <button id="resetBtn" class="secondary">Reset</button>
-        </div>
+        <div class="total-row"><span>Total</span><strong id="total">$0</strong></div>
+        <label class="field"><span>Notes</span><textarea id="notes" rows="5" placeholder="Address, client, timing, discount notes..."></textarea></label>
+        <button id="copyBtn" class="primary">Copy Quote</button>
+        <button id="printBtn" class="secondary">Print / Save as PDF</button>
+        <p class="version">v2 - cache bust with ?v=2</p>
       </aside>
     </section>
   </main>
-  <script src="script.js"></script>
+  <script src="script.js?v=2"></script>
 </body>
 </html>
